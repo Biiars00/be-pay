@@ -370,7 +370,18 @@ Body:
 Response:
 
 ```
-
+{
+    "clientName": "tester",
+    "clientEmail": "tester@email.com",
+    "gatewayId": 1,
+    "externalId": "a6ea8886-ac7d-4a38-8a1c-ac4092d4965d",
+    "amount": 350000,
+    "status": "success",
+    "cardLastNumbers": "6063",
+    "createdAt": "2026-03-16T00:27:27.093+00:00",
+    "updatedAt": "2026-03-16T00:27:27.093+00:00",
+    "id": 1
+}
 ```
 
 ## Fluxo da compra
