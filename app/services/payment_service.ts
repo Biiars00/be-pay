@@ -43,13 +43,17 @@ export default class PaymentService {
     data: PurchaseData,
     amount: number
   ): Promise<GatewayPaymentResult> {
-    return this.gatewayService.collectPayment({
-      amount,
-      name: data.name,
-      email: data.email,
-      cardNumber: data.cardNumber,
-      cvv: data.cvv,
-    })
+    try {
+      return this.gatewayService.collectPayment({
+        amount,
+        name: data.name,
+        email: data.email,
+        cardNumber: data.cardNumber,
+        cvv: data.cvv,
+      })
+    } catch (error) {
+      throw new Error(`Payment processing failed: ${error.message}`)
+    }
   }
 
   private async createTransactionRecord(
@@ -57,18 +61,26 @@ export default class PaymentService {
     payment: GatewayPaymentResult,
     amount: number
   ) {
-    return this.transactionRepository.create({
-      clientName: data.name,
-      clientEmail: data.email,
-      gatewayId: payment.gateway,
-      externalId: payment.result.id,
-      amount,
-      status: 'success',
-      cardLastNumbers: data.cardNumber.slice(-4),
-    })
+    try {
+      return this.transactionRepository.create({
+        clientName: data.name,
+        clientEmail: data.email,
+        gatewayId: payment.gateway,
+        externalId: payment.result.id,
+        amount,
+        status: 'success',
+        cardLastNumbers: data.cardNumber.slice(-4),
+      })
+    } catch (error) {
+      throw new Error(`Failed to create transaction record: ${error.message}`)
+    }
   }
 
   private async attachProductsToTransaction(transactionId: number, products: PurchaseProduct[]) {
-    return this.transactionRepository.attachProducts(transactionId, products)
+    try {
+      return this.transactionRepository.attachProducts(transactionId, products)
+    } catch (error) {
+      throw new Error(`Failed to attach products to transaction: ${error.message}`)
+    }
   }
 }
